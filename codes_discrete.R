@@ -3,27 +3,27 @@ library(scales)
 library(lsei)
 library(jmuOutlier)
 library(parallel)
+library(Rmosek)
+library(REBayes)
 
 N <- 100 #orginal sample size
-set.seed(1)
-
 M=500
 iter=10000
-s=c(0.5,5.5)
+
+set.seed(1)
 
 components <- sample(1:3, prob=c(0.2,0.5,0.3), size=N, replace=TRUE)
 mus <- c(1,3,5)
 sds <- c(1,1,1)*0.1
 samples <- rnorm(n=N,mean=mus[components],sd=sds[components])
+s=c(0.5,5.5)
 
+np = GLmix(samples, sigma = sds[1])
 
-
-hist(samples)
-
-
-set.seed(1)
 SSS=cbind(samples,rep(0.1,N))
 kapprox1= npmle(SSS, family = gaussian, maxiter =100)
+kapprox1$support = np$x
+kapprox1$mix.prop = np$y
 
 plot(kapprox1)
 
