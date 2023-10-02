@@ -77,14 +77,15 @@ sgd_boot_theta_svrg = function(support,w, sigmasq, x_new,eta){
     grad2 = dnorm(x_new[i], mean=support, sd=sd)*(-0.5/sigmasq+0.5/(sigmasq)^2*(x_new-support)^2)
     
     l= length(w)
-    grad2 = rep(sum(grad2*w),l)
+    #grad2 = rep(sum(grad2*w),l)
     
     new_w = comp*(100*w)
     new_w = (100*w)/sum(new_w)
     
     W1 = new_w*grad1
-    W2 = new_w*grad2
+    W2 = rep(sum(new_w*grad2),l)
   }
+  
   return(cbind(support+eta*W1,sigmasq+eta*W2))
 }
 
