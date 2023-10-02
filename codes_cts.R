@@ -3,27 +3,36 @@ library(scales)
 library(lsei)
 library(jmuOutlier)
 library(parallel)
+library(Rmosek)
+library(REBayes)
 
-N <- 50 #orginal sample size
-set.seed(1111)
-
+N <- 100 #orginal sample size
+set.seed(1111) #cts
+#set.seed(1) #discrete
 M=100
 iter=10000
 
-mus <- rnorm(N)
+#mus <- rnorm(N)
 #mus <- rgamma(N,5,2)
+#sds <- 0.1*rep(1,N)
+#samples <- rnorm(n=N,mean=mus,sd=sds)
+#ran = c(-3,3)
+ran = c(0.5,6)
+
+
+#mus <- rnorm(N)
+mus <- rgamma(N,5,2)
 sds <- 0.1*rep(1,N)
 samples <- rnorm(n=N,mean=mus,sd=sds)
-ran = c(-3,3)
-#ran = c(0.5,6)
 
-
-hist(samples)
+np = GLmix(samples, sigma = sds[1])
 
 
 
 SSS=cbind(samples,rep(0.1,N))
 kapprox1= npmle(SSS, family = gaussian, maxiter =100)
+kapprox1$support = np$x
+kapprox1$mix.prop = np$y
 
 plot(kapprox1)
 
@@ -144,12 +153,13 @@ for (i in 1:M){
 
 #########################################BEGIN###################
 ### compare with true mixture cdf
-tt <- seq(-3,5, by = .0001)
-#tt <- seq(-3,20, by = .0001)
-lines(tt, pnorm(tt), lwd = 2, lty = 2, col="blue")
-#lines(tt, pgamma(tt,5,2), lwd = 2, lty = 2, col="blue",xlim = ran)
+#tt <- seq(-3,5, by = .0001)
+tt <- seq(-3,20, by = .0001)
+#lines(tt, pnorm(tt), lwd = 2, lty = 2, col="blue")
+lines(tt, pgamma(tt,5,2), lwd = 2, lty = 2, col="blue",xlim = ran)
 par(new=T)
-plot(kapprox,col="red",main="Standard Normal, sample size = 50, bootstrap size=100",xlim = ran)
+#plot(kapprox,col="red",main="Standard Normal, sample size = 500, bootstrap size=100",xlim = ran)
+plot(kapprox,col="red",main="Gamma(5,2), sample size = 500, bootstrap size=100",xlim = ran)
 ##############END#################################################
 
 
