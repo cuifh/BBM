@@ -7,5 +7,7 @@ codes_cts.R: R script for Section 4.1 (simulated data in continuous cases).
 
 mixture_galaxy.R: R script for Section 4.2 (Gaussian mixture model on galaxy data set).
 
+##### codes_discrete.R and codes_cts.R need to use Mosek.
+
 If you have any questions or suggestion about the codes, please email cuifuheng@utexas.edu.
 We appreciate it very much for your questions and suggestion.
